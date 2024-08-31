@@ -1,0 +1,424 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Hotel API",
+    "version": "1.0.0",
+    "description": "API pour gérer les réservations et les chambres dans un hôtel."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "paths": {
+    "/reservations": {
+      "get": {
+        "summary": "Récupérer toutes les réservations",
+        "responses": {
+          "200": {
+            "description": "Liste des réservations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Reservation"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une nouvelle réservation",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewReservation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Réservation créée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reservation"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Erreur si la chambre n'est pas disponible"
+          }
+        }
+      }
+    },
+    "/reservations/{id}": {
+      "put": {
+        "summary": "Modifier une réservation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewReservation"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Réservation mise à jour",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Reservation"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Supprimer une réservation",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Réservation supprimée"
+          }
+        }
+      }
+    },
+    "/chambre_types/{type_id}/count": {
+      "get": {
+        "summary": "Compter les chambres louées d'un type",
+        "parameters": [
+          {
+            "name": "type_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Nombre de chambres louées",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "rented_chambres": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chambre_stats": {
+      "get": {
+        "summary": "Obtenir les statistiques des chambres",
+        "responses": {
+          "200": {
+            "description": "Statistiques des chambres",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChambreStats"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/chambres": {
+      "get": {
+        "summary": "Récupérer toutes les chambres",
+        "responses": {
+          "200": {
+            "description": "Liste des chambres",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Chambre"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer une nouvelle chambre",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewChambre"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Chambre créée",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Chambre"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/liberer_chambre/{reservation_id}": {
+      "post": {
+        "summary": "Libérer une chambre",
+        "parameters": [
+          {
+            "name": "reservation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chambre libérée avec succès",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Réservation ou chambre non trouvée"
+          }
+        }
+      }
+    },
+    "/chambre_types": {
+      "get": {
+        "summary": "Récupérer tous les types de chambre",
+        "responses": {
+          "200": {
+            "description": "Liste des types de chambre",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChambreType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Créer un nouveau type de chambre",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewChambreType"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Type de chambre créé",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChambreType"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ChambreType": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "cout": {
+            "type": "number",
+            "format": "float"
+          },
+          "disponible": {
+            "type": "integer"
+          }
+        }
+      },
+      "NewChambreType": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "cout": {
+            "type": "number",
+            "format": "float"
+          },
+          "disponible": {
+            "type": "integer"
+          }
+        },
+        "required": ["description", "cout", "disponible"]
+      },
+      "Chambre": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "chambre_number": {
+            "type": "string"
+          },
+          "type_id": {
+            "type": "integer"
+          },
+          "is_rented": {
+            "type": "boolean"
+          }
+        }
+      },
+      "NewChambre": {
+        "type": "object",
+        "properties": {
+          "chambre_number": {
+            "type": "string"
+          },
+          "type_id": {
+            "type": "integer"
+          }
+        },
+        "required": ["chambre_number", "type_id"]
+      },
+      "Reservation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "client_nom": {
+            "type": "string"
+          },
+          "client_prenom": {
+            "type": "string"
+          },
+          "days": {
+            "type": "integer"
+          },
+          "total_cout": {
+            "type": "number",
+            "format": "float"
+          },
+          "chambre_id": {
+            "type": "integer"
+          }
+        }
+      },
+      "NewReservation": {
+        "type": "object",
+        "properties": {
+          "client_nom": {
+            "type": "string"
+          },
+          "client_prenom": {
+            "type": "string"
+          },
+          "days": {
+            "type": "integer"
+          },
+          "chambre_id": {
+            "type": "integer"
+          }
+        },
+        "required": ["client_nom", "client_prenom", "days", "chambre_id"]
+      },
+      "ChambreStats": {
+        "type": "object",
+        "properties": {
+          "type_id": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "chambres_louees": {
+            "type": "integer"
+          },
+          "chambres_libres": {
+            "type": "integer"
+          },
+          "chambres_total": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
